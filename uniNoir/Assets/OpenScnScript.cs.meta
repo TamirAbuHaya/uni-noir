@@ -3,7 +3,11 @@ guid: 609b7889d8d480248b7a4bdeb7f154d2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - bookPanel: {instanceID: 0}
+  - messageText: {instanceID: 0}
+  - viewMessagesButton: {instanceID: 0}
+  - backgroundBookButton: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -1,53 +1,155 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 
-public class SceneFader : MonoBehaviour
+public class SceneTransitionManager : MonoBehaviour
 {
-    public Image fadeImage; // Assign the UI Image in the Inspector
     public float fadeDuration = 1f;
+    public float sceneDisplayDuration = 5f;
+    public Image fadeImage;
+    public string nextSceneName;
 
-    void Start()
+    [Header("Audio")]
+    public AudioSource backgroundMusicSource;
+    public AudioSource soundEffectSource;
+    public AudioClip backgroundMusic;
+    public AudioClip transitionSound;
+
+    private void Start()
     {
-        // Ensure the image starts fully transparent
-        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, 0f);
-        // Start fade-in for the initial scene
-        StartCoroutine(Fade(0f));
-    }
-
-    public void FadeToScene(string sceneName)
-    {
-        StartCoroutine(FadeOutAndIn(sceneName));
-    }
-
-    private IEnumerator FadeOutAndIn(string sceneName)
-    {
-        // Fade out
-        yield return StartCoroutine(Fade(1f));
-        // Load new scene
-        SceneManager.LoadScene(sceneName);
-        // Wait for the scene to load
-        yield return new WaitForSeconds(0.1f); // Small delay to ensure the scene loads
-        // Fade in
-        yield return StartCoroutine(Fade(1f));
-    }
-
-    private IEnumerator Fade(float targetAlpha)
-    {
-        float startAlpha = fadeImage.color.a;
-        float elapsed = 0f;
-
-        while (elapsed < fadeDuration)
+        // Ensure the fade image covers the entire screen
+        fadeImage.rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
+        
+        // Start background music
+        if (backgroundMusic != null && backgroundMusicSource != null)
         {
-            elapsed += Time.deltaTime;
-            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsed / fadeDuration);
-            fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, newAlpha);
+            backgroundMusicSource.clip = backgroundMusic;
+            backgroundMusicSource.loop = true;
+            backgroundMusicSource.Play();
+        }
+
+        // Start with a black screen and fade in
+        StartCoroutine(FadeInAndWait());
+    }
+
+    public void ExitGame()
+    {
+        StartCoroutine(FadeOutAndExit());
+    }
+
+    private IEnumerator FadeInAndWait()
+    {
+        yield return StartCoroutine(FadeIn());
+
+        // Wait for the specified duration
+        yield return new WaitForSeconds(sceneDisplayDuration);
+
+        // Start fading out and load the next scene
+        StartCoroutine(FadeOutAndLoadScene());
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float elapsedTime = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = 1f - (elapsedTime / fadeDuration);
+            fadeImage.color = color;
             yield return null;
         }
 
-        // Ensure the target alpha is set at the end
-        fadeImage.color = new Color(fadeImage.color.r, fadeImage.color.g, fadeImage.color.b, targetAlpha);
+        // Ensure the image is fully transparent at the end
+        color.a = 0f;
+        fadeImage.color = color;
     }
-   
+
+    private IEnumerator FadeOutAndLoadScene()
+    {
+        // Play transition sound
+        if (transitionSound != null && soundEffectSource != null)
+        {
+            soundEffectSource.PlayOneShot(transitionSound);
+        }
+
+        // Start fading out the background music
+        float startVolume = backgroundMusicSource.volume;
+
+        float elapsedTime = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = elapsedTime / fadeDuration;
+            fadeImage.color = color;
+
+            // Fade out the background music
+            if (backgroundMusicSource != null)
+            {
+                backgroundMusicSource.volume = Mathf.Lerp(startVolume, 0, elapsedTime / fadeDuration);
+            }
+
+            yield return null;
+        }
+
+        // Ensure the image is fully opaque and music is stopped at the end
+        color.a = 1f;
+        fadeImage.color = color;
+        if (backgroundMusicSource != null)
+        {
+            backgroundMusicSource.Stop();
+        }
+
+        // Load the next scene
+        SceneManager.LoadScene(nextSceneName);
+    }
+
+    private IEnumerator FadeOutAndExit()
+    {
+        // Play transition sound
+        if (transitionSound != null && soundEffectSource != null)
+        {
+            soundEffectSource.PlayOneShot(transitionSound);
+        }
+
+        // Start fading out the background music
+        float startVolume = backgroundMusicSource.volume;
+
+        float elapsedTime = 0f;
+        Color color = fadeImage.color;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            color.a = elapsedTime / fadeDuration;
+            fadeImage.color = color;
+
+            // Fade out the background music
+            if (backgroundMusicSource != null)
+            {
+                backgroundMusicSource.volume = Mathf.Lerp(startVolume, 0, elapsedTime / fadeDuration);
+            }
+
+            yield return null;
+        }
+
+        // Ensure the image is fully opaque and music is stopped at the end
+        color.a = 1f;
+        fadeImage.color = color;
+        if (backgroundMusicSource != null)
+        {
+            backgroundMusicSource.Stop();
+        }
+
+        // Exit the game
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 }
