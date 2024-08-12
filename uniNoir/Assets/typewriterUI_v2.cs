@@ -183,7 +183,7 @@ public class typewriterUI_v2 : MonoBehaviour
 			PlayTypewriterSound();
             tmpProText.text += c;
             tmpProText.text += leadingChar;
-			yield return new WaitForSeconds(0.2f);
+			yield return new WaitForSeconds(0.1f);
             yield return new WaitForSeconds(timeBtwChars);
         }
 

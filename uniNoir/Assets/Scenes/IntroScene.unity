@@ -737,7 +737,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeDuration: 3
-  sceneDisplayDuration: 13
+  sceneDisplayDuration: 10
   fadeImage: {fileID: 1763703649}
   nextSceneName: OpeningScene
   backgroundMusicSource: {fileID: 1555189154}
@@ -927,7 +927,7 @@ AudioSource:
   m_Volume: 0.298
   m_Pitch: 1
   Loop: 1
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -1119,7 +1119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96, y: -130.02}
+  m_AnchoredPosition: {x: 90, y: -130.01}
   m_SizeDelta: {x: 1096.8156, y: 260.0296}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1842821980
@@ -1151,7 +1151,7 @@ MonoBehaviour:
   text: {fileID: 0}
   tmpProText: {fileID: 1842821982}
   delayBeforeStart: 7
-  timeBtwChars: 0.2
+  timeBtwChars: 0.1
   leadingChar: 
   leadingCharBeforeDelay: 0
   startOnEnable: 1
