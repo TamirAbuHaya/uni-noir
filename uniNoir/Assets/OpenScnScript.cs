@@ -14,12 +14,16 @@ public class BookPanelController : MonoBehaviour
     public Button backgroundBookButton;
     public Button closePanelButton;
     public Button settingsButton;
+    public Button goButton;
 
     [Header("Button Delay Settings")]
     public float buttonCooldown = 1.0f;
     
     [Header("Down Here Indicator Settings")]
     public float indicatorDelay = 5.0f; // Delay before showing the indicator
+
+     [Header("Scene Transition")]
+    public SceneTransitionManager sceneTransitionManager;
 
     private bool canPressButton = true;
     private bool hasOpenedBook = false;
@@ -38,6 +42,7 @@ public class BookPanelController : MonoBehaviour
         bookPanelAnimator.gameObject.SetActive(false);
         settingsPanelAnimator.gameObject.SetActive(false);
         messageText.gameObject.SetActive(false);
+        goButton.gameObject.SetActive(false);
     }
 
     private void SetupButtonListeners()
@@ -46,6 +51,7 @@ public class BookPanelController : MonoBehaviour
         closePanelButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ClosePanel)));
         backgroundBookButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ShowPanel)));
         settingsButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel)));
+        goButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(TransitionToNextScene)));
     }
 
     private void StartIndicatorCoroutine()
@@ -80,7 +86,22 @@ public class BookPanelController : MonoBehaviour
     private void ToggleMessage()
     {
         messageText.gameObject.SetActive(!messageText.gameObject.activeSelf);
+        goButton.gameObject.SetActive(!goButton.gameObject.activeSelf);
         Debug.Log($"Message Text set to {messageText.gameObject.activeSelf}");
+    }
+
+    private void TransitionToNextScene()
+    {
+        if (sceneTransitionManager != null)
+        {
+            
+            bookPanelAnimator.HidePanel();
+            sceneTransitionManager.FadeToNextScene();
+        }
+        else
+        {
+            Debug.LogError("SceneTransitionManager is not assigned!");
+        }
     }
 
     private void ShowPanel()
@@ -124,3 +145,4 @@ public class BookPanelController : MonoBehaviour
         }
     }
 }
+

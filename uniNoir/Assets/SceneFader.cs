@@ -152,4 +152,10 @@ public class SceneTransitionManager : MonoBehaviour
             Application.Quit();
         #endif
     }
+
+    public void FadeToNextScene()
+    {
+        StartCoroutine(FadeOutAndLoadScene());
+    }
+
 }

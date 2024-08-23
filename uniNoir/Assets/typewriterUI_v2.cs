@@ -69,6 +69,9 @@ public class typewriterUI_v2 : MonoBehaviour
 	private void OnEnable()
 	{
 		print("On Enable!");
+		if(tmpProText.text.Length > 0){
+			writer = tmpProText.text.Substring(0,tmpProText.text.Length-1);
+		}
 		if(startOnEnable) StartTypewriter();
 	}
 
@@ -135,6 +138,7 @@ public class typewriterUI_v2 : MonoBehaviour
 	private void OnDisable()
 	{
 		StopAllCoroutines();
+		
 	}
 
 	
