@@ -5,7 +5,7 @@ using System.Collections;
 
 public class SceneTransitionManager : MonoBehaviour
 {
-    public float fadeDuration = 1f;
+    public float fadeDuration = 5f;
     public float sceneDisplayDuration = 5f;
     public Image fadeImage;
     public string nextSceneName;
@@ -21,16 +21,16 @@ public class SceneTransitionManager : MonoBehaviour
         // Ensure the fade image covers the entire screen
         fadeImage.rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
         
-        // Start background music
+        /* Start background music
         if (backgroundMusic != null && backgroundMusicSource != null)
         {
             backgroundMusicSource.clip = backgroundMusic;
             backgroundMusicSource.loop = true;
             backgroundMusicSource.Play();
         }
-
+        */
         // Start with a black screen and fade in
-        StartCoroutine(FadeInAndWait());
+        //StartCoroutine(FadeInAndWait());
     }
 
     public void ExitGame()
@@ -49,8 +49,18 @@ public class SceneTransitionManager : MonoBehaviour
         StartCoroutine(FadeOutAndLoadScene());
     }
 
-    private IEnumerator FadeIn()
+    public IEnumerator FadeIn()
     {
+        fadeImage.gameObject.SetActive(true);
+         /* Start background music
+        if (backgroundMusic != null && backgroundMusicSource != null)
+        {
+            backgroundMusicSource.clip = backgroundMusic;
+            backgroundMusicSource.loop = true;
+            backgroundMusicSource.Play();
+        }
+        */
+
         float elapsedTime = 0f;
         Color color = fadeImage.color;
 
@@ -65,10 +75,12 @@ public class SceneTransitionManager : MonoBehaviour
         // Ensure the image is fully transparent at the end
         color.a = 0f;
         fadeImage.color = color;
+        fadeImage.gameObject.SetActive(false);
     }
 
     private IEnumerator FadeOutAndLoadScene()
     {
+        fadeImage.gameObject.SetActive(true);
         // Play transition sound
         if (transitionSound != null && soundEffectSource != null)
         {
@@ -108,8 +120,9 @@ public class SceneTransitionManager : MonoBehaviour
         SceneManager.LoadScene(nextSceneName);
     }
 
-    private IEnumerator FadeOutAndExit()
+    public IEnumerator FadeOutAndExit()
     {
+        fadeImage.gameObject.SetActive(true);
         // Play transition sound
         if (transitionSound != null && soundEffectSource != null)
         {
@@ -157,5 +170,6 @@ public class SceneTransitionManager : MonoBehaviour
     {
         StartCoroutine(FadeOutAndLoadScene());
     }
+
 
 }

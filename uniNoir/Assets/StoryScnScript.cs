@@ -25,6 +25,10 @@ public class StoryScnScript : MonoBehaviour
 
     public float textBoxDelay = 1.0f;
 
+    private int tgl = 0;
+
+    private bool settingsOpen = false;
+
     public Image[] suspectsImages = new Image[8];
 
 
@@ -37,14 +41,25 @@ public class StoryScnScript : MonoBehaviour
         SetupButtonListeners();
         InitTexts();
         StartCoroutine(ShowTextBarAfterDelay());
+
     }
 
      private void InitializeUI()
     {
         settingsPanelAnimator.gameObject.SetActive(false);
         textButton.gameObject.SetActive(false);
+        if (sceneTransitionManager != null)
+        {
+            StartCoroutine(sceneTransitionManager.FadeIn());
+        }
 
     }
+    private void Update(){
+
+        StartCoroutine(RunTextsWithDelay());
+
+    }
+
 
     private void SetupButtonListeners()
     {
@@ -53,14 +68,14 @@ public class StoryScnScript : MonoBehaviour
     }
 
     private void InitTexts(){
-        texts[0] = "Prof. Shimmy has been found dead in his office.We brought you here to find who killed him. ";
-        texts[1] = "We've gathered some information about suspects while waiting for you,Continue to see the suspects. ";
-        texts[2] = "#1 Suspect : Prof. Gal Gumbler \nShimmy frequently belittled her life work in a theory she was about to publish.At the end, shimmy debunked her lifework, making it all go to waste. ";
-        texts[3] = "#2 Suspect : Secretary Oshrit  Yeffeti \nshimmy and oshrit have been skimming funds from university grants together. They got caught and shimmy tried to scapegoat the fiasco onto oshrit. ";
-        texts[4] = "#3 Suspect : Martinez Despadas \nA troubled student with a history of anger issues. He blames shimmy for failing his course, which resulted in the loss of his scholarship. ";
-        texts[5] = "#4 Suspect : Dr. Michael Coddler \nA long-time colleague of Professor Shimmy who feels overshadowed by his success. Coddler's envy has been simmering for years, fueled by Tavori's constant praise from the academic community.  ";
-        texts[6] = "#5 Suspect : Marina the lab assistant \nA graduate student rumored to have had an affair with Shimmy. She became obsessed with him, but their relationship ended badly. ";
-        texts[7] = "#6 Suspect : Prof. Semion Kogan \nTurns out Prof. kogan here is a quite a big spender. Shimmy discovered semions' misuse of funds and was going to report him. ";
+        texts[0] = "The well respected Prof. Shimi Tavori has been found dead in his office.\nWe brought you here to find who killed him. ";
+        texts[1] = "We've gathered some information about suspects while waiting for you.\nContinue to see the suspects. ";
+        texts[2] = "#1 Suspect : Prof. Gal Gumbler \nShimi debunked her lifework, making it all go to waste. ";
+        texts[3] = "#2 Suspect : Secretary Oshrit  Yeffeti \nShimi and Oshrit have been skimming funds from university grants together.\nThey got caught and Shimi tried to scapegoat the fiasco onto Oshrit. ";
+        texts[4] = "#3 Suspect : Martinez Despadas \nA troubled student with a history of anger issues.\nBlames Shimi for failing his courses, resulting in the loss of his scholarship. ";
+        texts[5] = "#4 Suspect : Dr. Michael Coddler \nA long-time colleague of Professor Shimi who feels overshadowed by his success. ";
+        texts[6] = "#5 Suspect : Marina the lab assistant \nA graduate student rumored to have had an affair with Shimi.\nShe became obsessed with him, but their relationship ended badly. ";
+        texts[7] = "#6 Suspect : Prof. Semion Kogan \nTurns out Prof. kogan here is a quite a big spender.\nShimi discovered semions' misuse of funds and was going to report him. ";
         texts[8] = "#7 Suspect : Janitor Yonas \nResented him for constantly criticizing his work ethic and feared losing his job. ";
         texts[9] = "Well ,that's all we could find ,from here it's up to you Goldy, \n Are you up for the challenge? ";
     }
@@ -75,6 +90,17 @@ public class StoryScnScript : MonoBehaviour
             canPressButton = true;
         }
     }
+    
+    private IEnumerator RunTextsWithDelay()
+    {
+        if(!settingsOpen){
+        int tmp = textCounter;
+        yield return new WaitForSeconds(20.0f);
+        if(tmp == textCounter){
+            TextManager();
+        }
+        }
+    }
 
      private IEnumerator ShowTextBarAfterDelay()
     {
@@ -87,10 +113,12 @@ public class StoryScnScript : MonoBehaviour
         if (settingsPanelAnimator.gameObject.activeSelf)
         {
             settingsPanelAnimator.HidePanel();
+            settingsOpen = false;
         }
         else
         {
             settingsPanelAnimator.ShowPanel();
+            settingsOpen = true;
         }
     }
 
@@ -98,15 +126,23 @@ public class StoryScnScript : MonoBehaviour
 
     private void TextManager()
     {
+
         convText.gameObject.SetActive(false);
+    
         if(textCounter == 9){
             if (settingsPanelAnimator.gameObject.activeSelf)
             {
-            settingsPanelAnimator.HidePanel();
+              settingsPanelAnimator.HidePanel();
             }
+
             textButton.gameObject.SetActive(false);
             settingsButton.gameObject.SetActive(false);
-            sceneTransitionManager.FadeToNextScene();
+
+            if (sceneTransitionManager != null)
+            {
+             sceneTransitionManager.FadeToNextScene();
+            }
+            
         }
         else{
             if(textCounter >= 1){
@@ -116,8 +152,10 @@ public class StoryScnScript : MonoBehaviour
             textCounter++;
             convText.SetText(texts[textCounter]);
             convText.gameObject.SetActive(true);
-        }
+            tgl++;
+            }   
 
+         }
+       
+  }
 
-    }
-}

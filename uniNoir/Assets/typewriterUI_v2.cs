@@ -156,10 +156,7 @@ public class typewriterUI_v2 : MonoBehaviour
             }
             text.text += c;
             text.text += leadingChar;
-			if(!c.Equals(" ")){      
-				yield return new WaitForSeconds(0.2f);
-				PlayTypewriterSound();
-			}
+			
             yield return new WaitForSeconds(timeBtwChars);
         }
 
@@ -183,11 +180,9 @@ public class typewriterUI_v2 : MonoBehaviour
             {
                 tmpProText.text = tmpProText.text.Substring(0, tmpProText.text.Length - leadingChar.Length);
             }
-			if(c != ' ' )
-			PlayTypewriterSound();
+			
             tmpProText.text += c;
             tmpProText.text += leadingChar;
-			yield return new WaitForSeconds(0.1f);
             yield return new WaitForSeconds(timeBtwChars);
         }
 
