@@ -52,14 +52,14 @@ public class SceneTransitionManager : MonoBehaviour
     public IEnumerator FadeIn()
     {
         fadeImage.gameObject.SetActive(true);
-         /* Start background music
+         // Start background music
         if (backgroundMusic != null && backgroundMusicSource != null)
         {
             backgroundMusicSource.clip = backgroundMusic;
             backgroundMusicSource.loop = true;
             backgroundMusicSource.Play();
         }
-        */
+        
 
         float elapsedTime = 0f;
         Color color = fadeImage.color;

@@ -43,7 +43,7 @@ public class typewriterUI_v2 : MonoBehaviour
 
         if (tmpProText != null)
         {
-            writer = tmpProText.text.Substring(0,tmpProText.text.Length-1);;
+//            writer = tmpProText.text.Substring(0,tmpProText.text.Length-1);;
         }
 
         if (audioSource == null)
@@ -180,10 +180,14 @@ public class typewriterUI_v2 : MonoBehaviour
             {
                 tmpProText.text = tmpProText.text.Substring(0, tmpProText.text.Length - leadingChar.Length);
             }
-			
+			float prevpitch = audioSource.pitch;
+			if(c != '.' && c != ' '){
+				PlayTypewriterSound();
+			}
             tmpProText.text += c;
             tmpProText.text += leadingChar;
             yield return new WaitForSeconds(timeBtwChars);
+			audioSource.pitch = prevpitch;
         }
 
         if (leadingChar != "")

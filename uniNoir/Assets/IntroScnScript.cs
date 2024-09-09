@@ -8,7 +8,7 @@ public class IntroScnScript : MonoBehaviour
 
         public SceneTransitionManager sceneTransitionManager;
 
-        public float sceneDuration = 5.0f;
+        public float sceneDuration = 4.0f;
 
     void Start()
     {

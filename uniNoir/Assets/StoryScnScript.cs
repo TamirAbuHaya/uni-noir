@@ -11,6 +11,7 @@ public class StoryScnScript : MonoBehaviour
     public SceneTransitionManager sceneTransitionManager;
     public PanelAnimatorController settingsPanelAnimator;
     public Button settingsButton;
+    public Button clsSettingsButton;
     public TextMeshProUGUI convText;
     public Button textButton;
 
@@ -30,6 +31,12 @@ public class StoryScnScript : MonoBehaviour
     private bool settingsOpen = false;
 
     public Image[] suspectsImages = new Image[8];
+
+     
+    [Header("Audio")]
+    public AudioSource backgroundMusicSource;
+    public AudioSource sfxSource;
+    public AudioClip buttonClick;
 
 
 
@@ -57,25 +64,37 @@ public class StoryScnScript : MonoBehaviour
     private void Update(){
 
         StartCoroutine(RunTextsWithDelay());
+        if(Input.GetKey(KeyCode.Escape)){
+            StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel));
+        }
+        if(Input.GetKey(KeyCode.Space)){
+            StartCoroutine(ButtonPressWithDelay(TextManager));
+        }
+        if(Input.GetKey(KeyCode.Return)){
+            StartCoroutine(ButtonPressWithDelay(TextManager));
+        }
+        
 
     }
 
 
     private void SetupButtonListeners()
     {
+        
         settingsButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel)));
         textButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(TextManager)));
+        clsSettingsButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel)));
     }
 
     private void InitTexts(){
         texts[0] = "The well respected Prof. Shimi Tavori has been found dead in his office.\nWe brought you here to find who killed him. ";
         texts[1] = "We've gathered some information about suspects while waiting for you.\nContinue to see the suspects. ";
         texts[2] = "#1 Suspect : Prof. Gal Gumbler \nShimi debunked her lifework, making it all go to waste. ";
-        texts[3] = "#2 Suspect : Secretary Oshrit  Yeffeti \nShimi and Oshrit have been skimming funds from university grants together.\nThey got caught and Shimi tried to scapegoat the fiasco onto Oshrit. ";
-        texts[4] = "#3 Suspect : Martinez Despadas \nA troubled student with a history of anger issues.\nBlames Shimi for failing his courses, resulting in the loss of his scholarship. ";
-        texts[5] = "#4 Suspect : Dr. Michael Coddler \nA long-time colleague of Professor Shimi who feels overshadowed by his success. ";
-        texts[6] = "#5 Suspect : Marina the lab assistant \nA graduate student rumored to have had an affair with Shimi.\nShe became obsessed with him, but their relationship ended badly. ";
-        texts[7] = "#6 Suspect : Prof. Semion Kogan \nTurns out Prof. kogan here is a quite a big spender.\nShimi discovered semions' misuse of funds and was going to report him. ";
+        texts[3] = "#2 Suspect : Secretary Oshrit Yeffeti \nShimi and Oshrit have been skimming funds from university grants together.\n They got caught and Shimi tried to scapegoat the fiasco onto Oshrit. ";
+        texts[4] = "#3 Suspect : Martinez Despadas \nA troubled student with a history of anger issues.\n Blames Shimi for failing his courses, resulting in the loss of his scholarship. ";
+        texts[5] = "#4 Suspect : Dr. Michael Coddler \nA long-time colleague of Professor Shimi who feels overshadowed by his  success. ";
+        texts[6] = "#5 Suspect : Marina the lab assistant \nA graduate student rumored to have had an affair with Shimi.\n She became obsessed with him, but their relationship ended badly. ";
+        texts[7] = "#6 Suspect : Prof. Semion Kogan \nTurns out Prof. kogan here is a quite a big spender.\n Shimi discovered semions' misuse of funds and was going to report him. ";
         texts[8] = "#7 Suspect : Janitor Yonas \nResented him for constantly criticizing his work ethic and feared losing his job. ";
         texts[9] = "Well ,that's all we could find ,from here it's up to you Goldy, \n Are you up for the challenge? ";
     }
@@ -110,6 +129,14 @@ public class StoryScnScript : MonoBehaviour
 
     private void ToggleSettingsPanel()
     {
+        
+        if (sfxSource != null &&  buttonClick != null)
+        {
+            sfxSource.clip = buttonClick;
+            //backgroundMusicSource.loop = true;
+            sfxSource.Play();
+        }
+
         if (settingsPanelAnimator.gameObject.activeSelf)
         {
             settingsPanelAnimator.HidePanel();

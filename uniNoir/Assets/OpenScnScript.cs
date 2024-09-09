@@ -14,6 +14,8 @@ public class BookPanelController : MonoBehaviour
     public Button backgroundLetterButton;
     public Button closePanelButton;
     public Button settingsButton;
+    public Button clsSettingsButton;
+
     public Button goButton;
     public Button quitButton;
     public TextMeshProUGUI text1;
@@ -30,6 +32,11 @@ public class BookPanelController : MonoBehaviour
     [Header("Audio")]
     public AudioSource backgroundMusicSource;
     public AudioClip backgroundMusic;
+    public AudioSource sfxSource;
+    public AudioClip letterOpenClip;
+    public AudioClip buttonClick;
+    public AudioClip fireClip;
+
 
 /* Start background music
         if (backgroundMusic != null && backgroundMusicSource != null)
@@ -44,10 +51,15 @@ public class BookPanelController : MonoBehaviour
     {
         InitializeUI();
         SetupButtonListeners();
-        //StartIndicatorCoroutine();
         if (sceneTransitionManager != null)
         {
             StartCoroutine(sceneTransitionManager.FadeIn());
+        }
+    }
+
+    private void Update(){
+         if(Input.GetKey(KeyCode.Escape)){
+            StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel));
         }
     }
 
@@ -65,6 +77,7 @@ public class BookPanelController : MonoBehaviour
         closePanelButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ClosePanel)));
         backgroundLetterButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ShowPanel)));
         settingsButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel)));
+        clsSettingsButton.onClick.AddListener(() => StartCoroutine(ButtonPressWithDelay(ToggleSettingsPanel)));
         goButton.onClick.AddListener(() => StartCoroutine(TransitionToNextScene()));
         quitButton.onClick.AddListener(()=> StartCoroutine(ButtonPressWithDelay(QuitGame)));
     }
@@ -73,6 +86,7 @@ public class BookPanelController : MonoBehaviour
 
     private IEnumerator ButtonPressWithDelay(System.Action action)
     {
+        
         if (canPressButton)
         {
             canPressButton = false;
@@ -82,18 +96,8 @@ public class BookPanelController : MonoBehaviour
         }
     }
 
-     /* private IEnumerator PlayLetterAnimationAndTransition()
-    {
-        // Play the letter animation
-        letterAnimator.Play("letter_animation");
-
-        // Wait for the animation to complete
-        yield return new WaitForSeconds(letterAnimator.GetCurrentAnimatorStateInfo(0).length);
-
-        // Transition to the next scene
-        TransitionToNextScene();
-    }
-    */
+  
+    
     private IEnumerator TransitionToNextScene()
     {
         //PlayLetterAnimationAndTransition();
@@ -101,11 +105,18 @@ public class BookPanelController : MonoBehaviour
         if (sceneTransitionManager != null)
         {
             bookPanelAnimator.HidePanel();
+            if (sfxSource != null &&  fireClip != null)
+        {
+            sfxSource.clip = fireClip;
+            //backgroundMusicSource.loop = true;
+            sfxSource.Play();
+        }
             letterAnimator.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.5f);
             text1.gameObject.SetActive(false);
             yield return new WaitForSeconds(1.5f);
             letterAnimator.gameObject.SetActive(false);
+            sfxSource.Stop();
             sceneTransitionManager.FadeToNextScene();
         }
         else
@@ -118,17 +129,17 @@ public class BookPanelController : MonoBehaviour
 
     private void ShowPanel()
     {
+        if (sfxSource != null &&  letterOpenClip != null)
+        {
+            sfxSource.clip = letterOpenClip;
+            //backgroundMusicSource.loop = true;
+            sfxSource.Play();
+        }
         backgroundLetterButton.interactable = false;
         bookPanelAnimator.ShowPanel();
         messageText.gameObject.SetActive(true);
         goButton.gameObject.SetActive(true);
-         //Start background music
-        if (backgroundMusic != null && backgroundMusicSource != null)
-        {
-            backgroundMusicSource.clip = backgroundMusic;
-            backgroundMusicSource.loop = true;
-            backgroundMusicSource.Play();
-        }
+        
         
 
         Debug.Log("Book Panel set to active");
@@ -138,7 +149,7 @@ public class BookPanelController : MonoBehaviour
 
     private void ClosePanel()
     {
-        backgroundMusicSource.Pause();
+       // backgroundMusicSource.Pause();
         bookPanelAnimator.HidePanel();
         StartCoroutine(ActivateBackgroundElementsAfterDelay());
         Debug.Log("Book Panel deactivated");
@@ -153,6 +164,13 @@ public class BookPanelController : MonoBehaviour
 
     private void ToggleSettingsPanel()
     {
+        if (sfxSource != null &&  buttonClick != null)
+        {
+            sfxSource.clip = buttonClick;
+            //backgroundMusicSource.loop = true;
+            sfxSource.Play();
+        }
+
         if (settingsPanelAnimator.gameObject.activeSelf)
         {
             settingsPanelAnimator.HidePanel();

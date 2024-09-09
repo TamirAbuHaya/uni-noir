@@ -21,6 +21,7 @@ public class SettingsPanelScript : MonoBehaviour
 
     public SceneTransitionManager sceneTransitionManager;
 
+
     private int sfxLevel = 3; // 0 to 3
     private int musicLevel = 1; // 0 or 1
     private bool isFullscreen;
@@ -175,9 +176,11 @@ public class SettingsPanelScript : MonoBehaviour
 
     void ApplyResolutionSetting()
     {
-        Debug.Log("CurrResIndex" + currentResolutionIndex);
-        //Resolution resolution = resolutions[currentResolutionIndex];
-        //Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Debug.Log("CurrResIndex" + currentResolutionIndex + resolutions.Length);
+        if(currentResolutionIndex < resolutions.Length){
+        Resolution resolution = resolutions[currentResolutionIndex];
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        }
     }
 
     // Public method to get SFX level (0 to 3)
